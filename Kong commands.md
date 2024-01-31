@@ -35,6 +35,24 @@ Call API recursively - generate traffic
       sleep 1
     done
 
+Add JWT plugin - service level
+
+    http POST localhost:8001/services/mockbin_service/plugins name=jwt
+
+Assign JWT credentials to Consumer
+
+    http POST localhost:8001/consumers/Jane/jwt
+
+Get JWT Key/Secret for consumer and Generate JWT Token
+
+    KEY=$(http GET localhost:8001/consumers/Jane/jwt | jq '.data[0].key' | xargs)
+    SECRET=$(http GET localhost:8001/consumers/Jane/jwt | jq '.data[0].secret'|xargs)
+    TOKEN=$(jwt encode --iss $KEY -S $SECRET)
+
+Consuming the service with JWT credentials:
+
+    http -h GET localhost:8000/mockbin Authorization:"Bearer $TOKEN"
     
+
 
     
